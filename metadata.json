@@ -1,0 +1,7 @@
+{
+  "name": "Copy of StudyGen - AI Study Planner",
+  "description": "An intelligent study planner that generates structured schedules based on your syllabus or topic, tailored to your timeframe and intensity preferences.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
