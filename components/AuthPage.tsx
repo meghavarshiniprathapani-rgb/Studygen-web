@@ -1,34 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { GraduationCap, Mail, Lock, User as UserIcon, ArrowRight, Loader2, CheckCircle2, AtSign, Sparkles, X, Globe, Eye, EyeOff, Check, Circle } from 'lucide-react';
-
-interface AuthPageProps {
-  onLogin: (user: User) => void;
-}
-
-// Utility to decode JWT without external library
-const decodeJWT = (token: string) => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
-};
+import { GraduationCap, Mail, Lock, User as UserIcon, Loader2, AtSign, Sparkles, Eye, EyeOff, Check, Circle, CheckCircle2 } from 'lucide-react';
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const googleButtonRef = useRef<HTMLDivElement>(null);
   
   // Visibility states
   const [showPassword, setShowPassword] = useState(false);
@@ -43,6 +21,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Password Requirements Logic
   const passwordRequirements = [
     { label: "8+ characters", met: formData.password.length >= 8 },
@@ -54,67 +36,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   ];
 
   const isPasswordStrong = passwordRequirements.every(req => req.met);
-
-  // Initialize Google SDK
-  useEffect(() => {
-    setMounted(true);
-
-    const initializeGoogle = () => {
-      if (typeof window !== 'undefined' && (window as any).google) {
-        // IMPORTANT: Replace the string below with your actual Client ID from Google Cloud Console
-        const CLIENT_ID = "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
-
-        try {
-          (window as any).google.accounts.id.initialize({
-            client_id: CLIENT_ID,
-            callback: handleGoogleResponse,
-            auto_select: false,
-            cancel_on_tap_outside: true
-          });
-
-          if (googleButtonRef.current) {
-            (window as any).google.accounts.id.renderButton(googleButtonRef.current, {
-              theme: "outline",
-              size: "large",
-              width: googleButtonRef.current.offsetWidth,
-              text: "continue_with",
-              shape: "rectangular"
-            });
-          }
-        } catch (err) {
-          console.error("Google Initialisation Error:", err);
-        }
-      }
-    };
-
-    const timer = setTimeout(initializeGoogle, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleGoogleResponse = (response: any) => {
-    setIsLoading(true);
-    const payload = decodeJWT(response.credential);
-    
-    if (payload) {
-      const user: User = {
-        name: payload.name,
-        email: payload.email,
-        avatar: payload.picture,
-        joinedAt: new Date().toISOString(),
-        isPremium: false,
-        hasPaymentMethod: false,
-        planCompleted: false
-      };
-      
-      setTimeout(() => {
-        onLogin(user);
-        setIsLoading(false);
-      }, 1000);
-    } else {
-      setError("Google authentication failed. Please check your credentials.");
-      setIsLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,23 +149,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
             </p>
           </div>
 
-          <div className="px-10 pb-6">
-             <div className="space-y-3">
-                <div ref={googleButtonRef} className="w-full min-h-[44px]"></div>
-             </div>
-             
-             <div className="relative mt-8 mb-2">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
-                </div>
-                <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold">
-                  <span className="bg-white dark:bg-slate-950 px-3 text-slate-400 dark:text-slate-500 transition-colors">
-                    Or use credentials
-                  </span>
-                </div>
-              </div>
-          </div>
-
           <div className="px-10 pb-10">
             <form onSubmit={handleSubmit}>
               {!isLogin && (
@@ -323,7 +227,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                   </button>
                 </div>
 
-                {/* Real-time Password Strength Requirements */}
                 {!isLogin && formData.password.length > 0 && (
                   <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-y-2 gap-x-4 animate-fade-in">
                     {passwordRequirements.map((req, idx) => (
@@ -406,3 +309,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     </div>
   );
 };
+
+interface AuthPageProps {
+  onLogin: (user: User) => void;
+}

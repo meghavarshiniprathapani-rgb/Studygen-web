@@ -89,10 +89,6 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    // Clear Google Identity Services session if possible
-    if ((window as any).google?.accounts?.id) {
-      (window as any).google.accounts.id.disableAutoSelect();
-    }
     setUser(null);
     setPlan(null);
     setError(null);
