@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import { GraduationCap, Mail, Lock, User as UserIcon, Loader2, AtSign, Sparkles, Eye, EyeOff, Check, Circle, CheckCircle2 } from 'lucide-react';
 
+interface AuthPageProps {
+  onLogin: (user: User) => void;
+}
+
 export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,6 +89,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
       }
     }
 
+    // Mock Authentication Delay
     setTimeout(() => {
       onLogin({
         name: isLogin ? username : formData.name,
@@ -95,7 +100,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
         planCompleted: false
       });
       setIsLoading(false);
-    }, 1500);
+    }, 1200);
   };
 
   return (
@@ -135,7 +140,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]"></div>
         
         <div className={`
-            w-full max-w-[440px] bg-white dark:bg-slate-950 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] 
+            w-full max-w-[440px] bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] 
             border border-slate-200 dark:border-slate-800 relative z-10 transition-all duration-700 ease-out transform
             ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
         `}>
@@ -150,9 +155,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
           </div>
 
           <div className="px-10 pb-10">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1">Full Name</label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -160,7 +165,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                     </div>
                     <input
                       type="text"
-                      className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
+                      className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
                       placeholder="Jane Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -169,7 +174,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 </div>
               )}
 
-              <div className="space-y-1.5 mb-4">
+              <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1">Username</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -177,7 +182,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
+                    className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
                     placeholder={isLogin ? "Enter your username" : "e.g. student123"}
                     value={formData.username}
                     onChange={(e) => setFormData({...formData, username: e.target.value})}
@@ -186,7 +191,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
               </div>
 
               {!isLogin && (
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1">Email Address</label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -194,7 +199,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                     </div>
                     <input
                       type="email"
-                      className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
+                      className="block w-full pl-11 pr-3 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
                       placeholder="you@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -203,7 +208,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 </div>
               )}
 
-              <div className="space-y-1.5 mb-4">
+              <div className="space-y-1.5">
                 <div className="flex justify-between items-center ml-1">
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-400">Password</label>
                 </div>
@@ -213,7 +218,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="block w-full pl-11 pr-11 py-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
+                    className="block w-full pl-11 pr-11 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
@@ -228,7 +233,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 </div>
 
                 {!isLogin && formData.password.length > 0 && (
-                  <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-y-2 gap-x-4 animate-fade-in">
+                  <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-y-2 gap-x-4 animate-fade-in">
                     {passwordRequirements.map((req, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         {req.met ? (
@@ -248,7 +253,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
               </div>
 
               {!isLogin && (
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1">Verify Password</label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -256,7 +261,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                     </div>
                     <input
                       type={showConfirmPassword ? "text" : "password"}
-                      className="block w-full pl-11 pr-11 py-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
+                      className="block w-full pl-11 pr-11 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 focus:border-indigo-500 transition-all duration-200 text-sm"
                       placeholder="••••••••"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
@@ -273,7 +278,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
               )}
 
               {error && (
-                <div className="mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-600 border border-red-100 animate-in slide-in-from-top-2">
+                <div className="mt-2 rounded-xl bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-600 border border-red-100 animate-in slide-in-from-top-2">
                   {error}
                 </div>
               )}
@@ -281,10 +286,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
               <button
                 type="submit"
                 disabled={isLoading || (!isLogin && !isPasswordStrong)}
-                className={`w-full py-3.5 px-4 rounded-xl shadow-lg text-sm font-bold text-white transition-all transform active:scale-[0.98] ${
+                className={`w-full py-4 px-4 mt-4 rounded-2xl shadow-lg text-sm font-bold text-white transition-all transform active:scale-[0.98] ${
                   isLoading || (!isLogin && !isPasswordStrong)
                     ? 'bg-slate-300 dark:bg-slate-800 cursor-not-allowed text-slate-500'
-                    : 'bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500'
+                    : 'bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 shadow-indigo-500/20'
                 }`}
               >
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (isLogin ? 'Sign in' : 'Create account')}
@@ -309,7 +314,3 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     </div>
   );
 };
-
-interface AuthPageProps {
-  onLogin: (user: User) => void;
-}
