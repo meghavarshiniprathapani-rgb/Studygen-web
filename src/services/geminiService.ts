@@ -1,7 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { StudyPlan, DayDetails, Duration, Intensity, CodeEvaluationResult, QuizQuestion, FinalExam } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get initialized AI instance or throw friendly error
+const getAI = () => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Gemini API Key is missing. Please set the VITE_GEMINI_API_KEY environment variable.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 // Models
 const FLASH_MODEL = "gemini-3-flash-preview";
@@ -12,6 +19,7 @@ export const generateStudyPlan = async (
   duration: Duration,
   intensity: Intensity
 ): Promise<StudyPlan> => {
+  const ai = getAI();
   const prompt = `
     Analyze the following request to create a structured study plan:
     Topic: "${topic}"
@@ -102,6 +110,7 @@ export const getDayDetails = async (
   day: string,
   topics: string[]
 ): Promise<DayDetails> => {
+  const ai = getAI();
   const prompt = `
     Generate detailed study resources for: ${focus} - ${day}
     Topics: ${topics.join(", ")}
@@ -143,6 +152,13 @@ export const checkCode = async (
   language: string,
   input: string
 ): Promise<CodeEvaluationResult> => {
+  let ai;
+  try {
+    ai = getAI();
+  } catch (e) {
+    return { output: "Evaluation failed.", analysis: "Missing API Key.", isCorrect: false };
+  }
+
   const prompt = `
     Analyze and simulate the following ${language} code for this problem: "${problem}"
     Input: "${input}"
@@ -175,12 +191,14 @@ export const getSolution = async (
   problem: string,
   language: string
 ): Promise<string> => {
+  const ai = getAI();
   const prompt = `Return ONLY the raw optimal code for: "${problem}" in ${language}. No markdown.`;
   const response = await ai.models.generateContent({ model: PRO_MODEL, contents: prompt });
   return response.text?.replace(/^```[a-z]*\n/i, '').replace(/\n```$/, '') || "// Error";
 };
 
 export const generateQuiz = async (topics: string[]): Promise<QuizQuestion[]> => {
+  const ai = getAI();
   const prompt = `Generate 5 MCQs for: ${topics.join(", ")}`;
   const response = await ai.models.generateContent({
     model: FLASH_MODEL,
@@ -206,6 +224,7 @@ export const generateQuiz = async (topics: string[]): Promise<QuizQuestion[]> =>
 };
 
 export const generateFinalExam = async (topic: string): Promise<FinalExam> => {
+  const ai = getAI();
   const prompt = `Generate a rigorous final exam for: ${topic}. Include 5 difficult multiple choice questions and 3 comprehensive coding challenges.`;
   const response = await ai.models.generateContent({
     model: FLASH_MODEL, // Switch to Flash for speed
